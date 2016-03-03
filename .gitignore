@@ -1,8 +1,16 @@
+# webpack generated files
+dist
+
 # elm-package generated files
-elm-package.json
+#elm-package.json
 elm-stuff/
 # elm-repl generated files
 repl-temp-*
+
+# npm files
+node_modules
+npm-*.log
+
 
 # =========================
 # Operating System Files
