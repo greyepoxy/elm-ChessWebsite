@@ -1,7 +1,7 @@
-module Update (..) where
+module App.Update (..) where
 
-import Model exposing (..)
-import Actions exposing (..)
+import App.Model exposing (..)
+import App.Actions exposing (..)
 import Effects exposing (Effects)
 
 

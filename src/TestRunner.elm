@@ -1,6 +1,6 @@
 module Main where
 
-import Components.FakeTests exposing (tests)
+import App.Components.FakeTests exposing (tests)
 
 import ElmTest exposing (..)
 import Graphics.Element exposing (Element)

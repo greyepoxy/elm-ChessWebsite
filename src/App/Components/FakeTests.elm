@@ -1,4 +1,4 @@
-module Components.FakeTests(tests) where
+module App.Components.FakeTests(tests) where
 
 import ElmTest exposing (..)
 
