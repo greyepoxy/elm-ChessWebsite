@@ -8,7 +8,7 @@
     "build": "rimraf dist && webpack",
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --port 3000",
-    "test": "webpack-dev-server --config webpack.test.config.js --port 3001"
+    "test": "webpack-dev-server --config webpack.test.config.js --port 3001 --inline"
   },
   "keywords": [
     "elm"

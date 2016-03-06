@@ -5,7 +5,22 @@ var ExtractTextPlugin = require("extract-text-webpack-plugin");
 module.exports = {
 
   commonConfig: {
+    resolve: {
+      modulesDirectories: ['node_modules'],
+    },
     
+    plugins: [
+      new ExtractTextPlugin('styles.[hash].css'),
+      new HtmlWebpackPlugin({
+        template: 'src/index.html',
+        inject:   'body',
+        filename: 'index.html'
+      })
+    ],
+
+  },
+  
+  indexFileConfig: {
     entry: {
       app: [
         './src/index.js'
@@ -17,10 +32,6 @@ module.exports = {
       filename: '[hash].js',
     },
     
-    resolve: {
-      modulesDirectories: ['node_modules'],
-    },
-
     module: {
       loaders: [
         {
@@ -41,24 +52,42 @@ module.exports = {
         }
       ],
     },
-    
-    plugins: [
-      new ExtractTextPlugin('styles.[hash].css'),
-      new HtmlWebpackPlugin({
-        template: 'src/index.html',
-        inject:   'body',
-        filename: 'index.html'
-      })
-    ],
-
   },
   
-  additionalDevConfig: {
+  testFileConfig: {
+    entry: {
+      app: [
+        './src/tests.js'
+      ]
+    },
+
+    output: {
+      path: path.resolve(__dirname + '/dist/tests'),
+      filename: 'tests.[hash].js',
+    },
+  },
+  
+  devConfig: {
 
     devServer: {
       stats: 'errors-only'
     },
-
+  },
+  
+  elmConfig: {
+    module: {
+      loaders: [
+        {
+          test: /\.elm$/,
+          exclude: [/elm-stuff/, /node_modules/],
+          loader: 'elm-webpack'
+        }
+      ],
+      noParse: /\.elm$/,
+    }
+  },
+  
+  elmHotLoaderConfig: {
     module: {
       loaders: [
         {
@@ -67,7 +96,6 @@ module.exports = {
           loader: 'elm-hot!elm-webpack'
         }
       ],
-      
       noParse: /\.elm$/,
     }
   },
