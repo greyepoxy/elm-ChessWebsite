@@ -9,15 +9,17 @@ var TARGET_ENV = process.env.npm_lifecycle_event === 'build' ? 'prod' : 'dev';
 if ( TARGET_ENV === 'dev' ) {
   var devConfig = require('./webpack.common.config.js').devConfig;
   var elmHotLoaderConfig = require('./webpack.common.config.js').elmHotLoaderConfig;
+  var indexDevEntryConfig = require('./webpack.common.config.js').indexDevEntryConfig;
   
-	module.exports = merge(indexFileConfig, devConfig, commonConfig, elmHotLoaderConfig);
+	module.exports = merge(indexDevEntryConfig, indexFileConfig, devConfig, commonConfig, elmHotLoaderConfig);
 }
 
 // additional webpack settings for prod env (when invoked via 'npm run build')
 if ( TARGET_ENV === 'prod' ) {
   var elmConfig = require('./webpack.common.config.js').elmConfig;
+  var indexEntryConfig = require('./webpack.common.config.js').indexEntryConfig;
 	
-	module.exports = merge(indexFileConfig, commonConfig, elmConfig, {
+	module.exports = merge(indexEntryConfig, indexFileConfig, commonConfig, elmConfig, {
 		
 		//TODO: perform optimizations!
 		plugins: [
