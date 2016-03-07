@@ -1,10 +1,13 @@
 module App.Model (..) where
 
+import App.Components.Chessboard.Model exposing (..)
 
-type alias AppModel =
-  {}
+type alias AppModel = {
+    chessboard: Chessboard
+  }
 
 
 initialModel : AppModel
-initialModel =
-  {}
+initialModel = {
+    chessboard = initialBoard
+  }
