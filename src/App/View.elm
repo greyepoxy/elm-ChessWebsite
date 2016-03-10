@@ -5,6 +5,8 @@ import App.Actions exposing (..)
 import App.Model exposing (..)
 
 
+import App.Components.ChessPieces exposing (..)
+
 import App.Components.Chessboard.Model exposing (Chessboard)
 import App.Components.Chessboard.View
 import App.Components.Chessboard.Actions
@@ -17,4 +19,5 @@ view address model =
   in
     div
       []
-      [ fromElement (App.Components.Chessboard.View.view childChessboardActions model.chessboard) ]
+      [ pawn
+      , fromElement (App.Components.Chessboard.View.view childChessboardActions model.chessboard) ]
