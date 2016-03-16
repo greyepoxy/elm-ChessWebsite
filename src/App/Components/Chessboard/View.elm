@@ -2,40 +2,47 @@ module App.Components.Chessboard.View (..) where
 
 import Array exposing (Array)
 import Color exposing (Color)
-import Graphics.Element exposing (Element)
-import Graphics.Collage exposing (collage)
+import Color.Convert exposing (colorToHex)
+import Html exposing (Html)
+import Svg exposing (..)
+import Svg.Attributes exposing (..)
 import App.Components.Chessboard.Actions exposing (..)
 import App.Components.Chessboard.Model exposing (..)
 
-squareSize = 60
+squareSize = 150
 squareSizeDiv2 = squareSize / 2
 boardSize = squareSize * 8
 boardSizeDiv2 = boardSize / 2
 
-view : Signal.Address Action -> Chessboard -> Element
+view : Signal.Address Action -> Chessboard -> Html
 view address chessboard =
-  Array.indexedMap (\x col -> Array.indexedMap (\y square -> getPieceForm (x,y) square) col) chessboard.squares
-    |> getPieceFormsAsFlatList
-    |> collage boardSize boardSize 
+  Array.indexedMap (\x col -> Array.indexedMap (\y square -> getSquareAsSvg (x,y) square) col) chessboard.squares
+    |> getArrayOfArraysAsFlatList
+    |> Svg.svg [width (toString boardSize), height (toString boardSize)]
 
-getPieceFormsAsFlatList: Array (Array Graphics.Collage.Form) -> List Graphics.Collage.Form
-getPieceFormsAsFlatList arrayOfArraysOfForms =
-  Array.foldl (\col flatList -> List.append flatList (Array.toList col)) [] arrayOfArraysOfForms
-
-getPieceForm : (Int, Int) -> BoardSquare -> Graphics.Collage.Form
-getPieceForm squarePos square =
-  Graphics.Collage.square squareSize
-    |> Graphics.Collage.filled (getSquareColor squarePos) 
-    |> Graphics.Collage.move (translateToScreenCoordinates squarePos)
+getArrayOfArraysAsFlatList: Array (Array b) -> List b
+getArrayOfArraysAsFlatList arrayOfArrays =
+  Array.foldl (\col flatList -> List.append flatList (Array.toList col)) [] arrayOfArrays
 
 translateToScreenCoordinates : (Int, Int) -> (Float, Float)
-translateToScreenCoordinates (xPos,yPos) =
+translateToScreenCoordinates (squareX, squareY) =
   let
-    x = toFloat xPos * squareSize
-    y = toFloat yPos * squareSize
+    x = toFloat squareX * squareSize
+    y = toFloat squareY * squareSize
   in
-    (x - boardSizeDiv2 + squareSizeDiv2, boardSizeDiv2 - y - squareSizeDiv2)
+    (x, y)
 
 getSquareColor: (Int, Int) -> Color
 getSquareColor (x,y) =
-  if (x + y) % 2 == 0 then Color.white else Color.black
+  if (x + y) % 2 == 0 then Color.white else Color.black  
+
+getSquareAsSvg: (Int, Int) -> BoardSquare -> Svg
+getSquareAsSvg squarePos square =
+  let
+    (xPos, yPos) = translateToScreenCoordinates squarePos
+  in
+    Svg.rect [x (toString xPos)
+      , y (toString yPos)
+      , width (toString squareSize)
+      , height (toString squareSize)
+      , fill (colorToHex (getSquareColor squarePos))] []

@@ -19,5 +19,4 @@ view address model =
   in
     div
       []
-      [ pawn
-      , fromElement (App.Components.Chessboard.View.view childChessboardActions model.chessboard) ]
+      [ App.Components.Chessboard.View.view childChessboardActions model.chessboard ]
