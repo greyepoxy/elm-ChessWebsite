@@ -10,26 +10,27 @@ import App.Components.Chessboard.Actions exposing (..)
 import App.Components.Chessboard.Model exposing (..)
 import App.Components.ChessPieces as ChessPieces
 
-squareSize = 150
-squareSizeDiv2 = squareSize / 2
-boardSize = squareSize * 8
-boardSizeDiv2 = boardSize / 2
+numSquares = 8
 
-view : Signal.Address Action -> Chessboard -> Html
-view address chessboard =
-  Array.indexedMap (\y col -> Array.indexedMap (\x square -> getSquareAsSvg (x,y) square) col) chessboard.squares
-    |> getArrayOfArraysAsFlatList
-    |> Svg.svg [width (toString boardSize), height (toString boardSize)]
+view : (Int, Int) -> Signal.Address Action -> Chessboard -> Html
+view (windowW, windowH) address chessboard =
+  let
+    boardSize = if windowW < windowH then windowW else windowH
+    squareSize = boardSize // numSquares
+  in
+    Array.indexedMap (\y col -> Array.indexedMap (\x square -> getSquareAsSvg squareSize (x,y) square) col) chessboard.squares
+      |> getArrayOfArraysAsFlatList
+      |> Svg.svg [width (toString boardSize), height (toString boardSize), viewBox ("0 0 " ++ (toString boardSize) ++ " " ++ (toString boardSize)) ]
 
 getArrayOfArraysAsFlatList: Array (Array b) -> List b
 getArrayOfArraysAsFlatList arrayOfArrays =
   Array.foldl (\col flatList -> List.append flatList (Array.toList col)) [] arrayOfArrays
 
-translateToScreenCoordinates : (Int, Int) -> (Float, Float)
-translateToScreenCoordinates (squareX, squareY) =
+translateToScreenCoordinates : Int -> (Int, Int) -> (Int, Int)
+translateToScreenCoordinates squareSize (squareX, squareY) =
   let
-    x = toFloat squareX * squareSize
-    y = toFloat squareY * squareSize
+    x = squareX * squareSize
+    y = squareY * squareSize
   in
     (x, y)
 
@@ -37,10 +38,10 @@ getSquareColor: (Int, Int) -> Color
 getSquareColor (x,y) =
   if (x + y) % 2 == 0 then Color.white else Color.charcoal
 
-getSquareAsSvg: (Int, Int) -> BoardSquare -> Svg
-getSquareAsSvg squarePos square =
+getSquareAsSvg: Int -> (Int, Int) -> BoardSquare -> Svg
+getSquareAsSvg squareSize squarePos square =
   let
-    (xPos, yPos) = translateToScreenCoordinates squarePos
+    (xPos, yPos) = translateToScreenCoordinates squareSize squarePos
   in
     Svg.g [
       transform ("translate(" ++ (toString xPos) ++ "," ++ (toString yPos) ++ ")")
@@ -51,11 +52,11 @@ getSquareAsSvg squarePos square =
         , height (toString squareSize)
         , fill (colorToHex (getSquareColor squarePos))
       ] []
-      , getBoardSquareAsSvg square
+      , getBoardSquareAsSvg squareSize square
     ]
 
-getBoardSquareAsSvg: BoardSquare -> Svg
-getBoardSquareAsSvg square =
+getBoardSquareAsSvg: Int -> BoardSquare -> Svg
+getBoardSquareAsSvg squareSize square =
   case square of
     Empty -> g [] []
-    FilledWith team piece -> ChessPieces.getPieceAsSvg team piece
+    FilledWith team piece -> ChessPieces.getPieceAsSvg squareSize team piece

@@ -19,4 +19,4 @@ view address model =
   in
     div
       []
-      [ App.Components.Chessboard.View.view childChessboardActions model.chessboard ]
+      [ App.Components.Chessboard.View.view model.windowDimensions childChessboardActions model.chessboard ]
