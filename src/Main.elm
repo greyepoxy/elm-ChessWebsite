@@ -1,34 +1,16 @@
 module Main (..) where
 
-import Html exposing (..)
-import Effects exposing (Effects, Never)
+import Html exposing (Html)
 import Task exposing (Task)
-import StartApp
-import App.Actions exposing (..)
-import App.Model exposing (..)
-import App.Update exposing (..)
-import App.View exposing (..)
+import Effects exposing (Never)
+import MainCommon
+import App.Actions exposing (Action(NoOp))
 
-
-init : ( AppModel, Effects Action )
-init =
-  ( initialModel, Effects.none )
-
-
-app : StartApp.App AppModel
-app =
-  StartApp.start
-    { init = init
-    , inputs = []
-    , update = update
-    , view = view
-    }
-
+app = MainCommon.app []
 
 main : Signal Html
 main =
   app.html
-
 
 port runner : Signal (Task Never ())
 port runner =
