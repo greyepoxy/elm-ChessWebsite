@@ -12,15 +12,22 @@ import App.Components.ChessPieces as ChessPieces
 
 numSquares = 8
 
-view : (Int, Int) -> Signal.Address Action -> Chessboard -> Html
-view (windowW, windowH) address chessboard =
-  let
-    boardSize = if windowW < windowH then windowW else windowH
-    squareSize = boardSize // numSquares
-  in
-    Array.indexedMap (\y col -> Array.indexedMap (\x square -> getSquareAsSvg squareSize (x,y) square) col) chessboard.squares
-      |> getArrayOfArraysAsFlatList
-      |> Svg.svg [width (toString boardSize), height (toString boardSize), viewBox ("0 0 " ++ (toString boardSize) ++ " " ++ (toString boardSize)) ]
+view : Maybe (Int, Int) -> Signal.Address Action -> Chessboard -> Html
+view maybeDim address chessboard =
+  case maybeDim of
+    Just (windowW, windowH) ->
+      let 
+        boardSize =  if windowW < windowH then windowW else windowH
+        squareSize = boardSize // numSquares
+      in
+        Array.indexedMap (\y col -> Array.indexedMap (\x square -> getSquareAsSvg squareSize (x,y) square) col) chessboard.squares
+          |> getArrayOfArraysAsFlatList
+          |> Svg.svg [class "overflow-hidden mx-auto"
+            , width (toString windowW)
+            , height (toString windowH)
+            , viewBox ("0 0" ++ " " ++ (toString windowW) ++ " " ++ (toString windowH)) ]
+    Maybe.Nothing ->
+      Svg.svg [] []
 
 getArrayOfArraysAsFlatList: Array (Array b) -> List b
 getArrayOfArraysAsFlatList arrayOfArrays =

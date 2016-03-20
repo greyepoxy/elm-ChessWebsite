@@ -11,7 +11,7 @@ update : Action -> AppModel -> ( AppModel, Effects Action )
 update action model =
   case action of
     NoOp -> ( model, Effects.none )
-    SetWindowDimensions dimensions -> ( {model | windowDimensions = dimensions }, Effects.none )
+    Resize dimensions -> ( {model | windowDimensions = Just dimensions }, Effects.none )
     ChildBoardActions action ->
       let
         (newChessboard, effects) = App.Components.Chessboard.Update.update action model.chessboard

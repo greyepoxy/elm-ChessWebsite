@@ -4,12 +4,12 @@ import App.Components.Chessboard.Model exposing (..)
 
 type alias AppModel = {
     chessboard: Chessboard
-    , windowDimensions: (Int, Int)
+    , windowDimensions: Maybe (Int, Int)
   }
 
 
-initialModel : AppModel
-initialModel = {
+initialModel : (Int,Int) -> AppModel
+initialModel initialWindowDimensions = {
     chessboard = initialBoard
-    , windowDimensions = (500,500)
+    , windowDimensions = Just initialWindowDimensions
   }
