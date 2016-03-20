@@ -18,17 +18,17 @@ view address model =
     childChessboardActions =
         Signal.forwardTo address ChildBoardActions
   in
-    div [ Html.Attributes.class "flex", Html.Attributes.style [("width",  "100%"), ("height", "100vh")] ]
-      [
-        div [ Html.Attributes.class "flex-auto" ] []
-        , div [ Html.Attributes.class "flex flex-column border" ]
-          [
-            div [ Html.Attributes.class "border", Html.Attributes.style [("height", "40px")] ] []
-            , App.Components.Chessboard.View.view (getChessboardDimensions model.windowDimensions) childChessboardActions model.chessboard
-            , div [ Html.Attributes.class "border", Html.Attributes.style [("height", "40px")] ] []
-          ]
-        , div [ Html.Attributes.class "flex-auto" ] []
-      ]
+    div [ Html.Attributes.class "flex flex-auto" ]
+    [
+      div [ Html.Attributes.class "flex-auto" ] []
+      , div [ Html.Attributes.class "flex flex-column" ]
+        [
+          div [ Html.Attributes.style [("height", "40px")] ] []
+          , App.Components.Chessboard.View.view (getChessboardDimensions model.windowDimensions) childChessboardActions model.chessboard
+          , div [ Html.Attributes.style [("height", "40px")] ] []
+        ]
+      , div [ Html.Attributes.class "flex-auto" ] []
+    ]
 
 getChessboardDimensions: (Int,Int) -> (Int, Int)
 getChessboardDimensions (w,h) =
