@@ -30,6 +30,6 @@ view address model =
         , div [ Html.Attributes.class "flex-auto" ] []
       ]
 
-getChessboardDimensions: Maybe (Int,Int) -> Maybe (Int, Int)
-getChessboardDimensions winDim =
-  Maybe.map (\(w,h) -> (truncate (toFloat w * 0.9), h - 80)) winDim
+getChessboardDimensions: (Int,Int) -> (Int, Int)
+getChessboardDimensions (w,h) =
+  (truncate (toFloat w * 0.9), h - 80)
