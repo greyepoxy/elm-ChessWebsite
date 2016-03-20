@@ -8,9 +8,6 @@ import App.Actions exposing (Action(Resize))
 import App.Update exposing (update)
 import App.View exposing (view)
 
---TODO: delete!
-import Debug
-
 init : (Int,Int) -> ( AppModel, Effects Action )
 init initialWindowDimensions =
   ( initialModel initialWindowDimensions, Effects.none )
