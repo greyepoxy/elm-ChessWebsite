@@ -18,7 +18,7 @@ view address model =
     childChessboardActions =
         Signal.forwardTo address ChildBoardActions
   in
-    div [ Html.Attributes.class "flex flex-auto" ]
+    div [ Html.Attributes.class "flex" ]
     [
       div [ Html.Attributes.class "flex-auto" ] []
       , div [ Html.Attributes.class "flex flex-column" ]
