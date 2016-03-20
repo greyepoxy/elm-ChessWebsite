@@ -6,7 +6,7 @@ import Effects exposing (Never)
 import MainCommon
 import App.Actions exposing (Action(NoOp))
 
-app = MainCommon.app [swapsignal]
+app = MainCommon.app initialWindowDimensions [swapsignal]
 
 main : Signal Html
 main =
@@ -15,6 +15,8 @@ main =
 port runner : Signal (Task Never ())
 port runner =
   app.tasks
+
+port initialWindowDimensions : (Int, Int)
 
 -- for elm-hot-loader to trigger a re-render
 port swap : Signal Bool

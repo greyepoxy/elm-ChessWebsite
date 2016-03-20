@@ -6,7 +6,7 @@ import Effects exposing (Never)
 import MainCommon
 import App.Actions exposing (Action(NoOp))
 
-app = MainCommon.app []
+app = MainCommon.app initialWindowDimensions []
 
 main : Signal Html
 main =
@@ -15,3 +15,5 @@ main =
 port runner : Signal (Task Never ())
 port runner =
   app.tasks
+
+port initialWindowDimensions : (Int, Int)

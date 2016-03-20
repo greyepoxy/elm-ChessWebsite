@@ -11,14 +11,14 @@ import App.View exposing (view)
 --TODO: delete!
 import Debug
 
-init : ( AppModel, Effects Action )
-init =
+init : (Int,Int) -> ( AppModel, Effects Action )
+init initialWindowDimensions =
   ( initialModel initialWindowDimensions, Effects.none )
 
-app : List (Signal Action) -> StartApp.App AppModel
-app extraSignals =
+app : (Int,Int) -> List (Signal Action) -> StartApp.App AppModel
+app initialWindowDimensions extraSignals =
   StartApp.start
-    { init = init
+    { init = init initialWindowDimensions
     , inputs = List.append extraSignals [windowDimensions]
     , update = update
     , view = view
@@ -27,5 +27,3 @@ app extraSignals =
 windowDimensions : Signal Action
 windowDimensions = 
   Signal.map Resize Window.dimensions
-  
-port initialWindowDimensions : (Int, Int)
