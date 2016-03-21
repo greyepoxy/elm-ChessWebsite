@@ -12,18 +12,19 @@ import App.Components.ChessPieces as ChessPieces
 
 numSquares = 8
 
-view : (Int, Int) -> Signal.Address Action -> Chessboard -> Html
-view (windowW, windowH) address chessboard =
+view : Signal.Address Action -> Chessboard -> Html
+view address chessboard =
   let 
-    boardSize =  if windowW < windowH then windowW else windowH
-    squareSize = boardSize // numSquares
+    squareSize = 150
+    boardSize = squareSize * numSquares
   in
     Array.indexedMap (\y col -> Array.indexedMap (\x square -> getSquareAsSvg squareSize (x,y) square) col) chessboard.squares
       |> getArrayOfArraysAsFlatList
-      |> Svg.svg [class "overflow-hidden mx-auto"
-        , width (toString windowW)
-        , height (toString windowH)
-        , viewBox ("0 0" ++ " " ++ (toString windowW) ++ " " ++ (toString windowH)) ]
+      |> Svg.svg [class "mx-auto"
+        , preserveAspectRatio "xMidYMid meet"  
+        , width "100%"
+        , height "100%"
+        , viewBox ("0 0 " ++ (toString boardSize) ++ " " ++ (toString boardSize))]
 
 getArrayOfArraysAsFlatList: Array (Array b) -> List b
 getArrayOfArraysAsFlatList arrayOfArrays =

@@ -20,16 +20,12 @@ view address model =
   in
     div [ Html.Attributes.class "flex" ]
     [
-      div [ Html.Attributes.class "flex-auto" ] []
-      , div [ Html.Attributes.class "flex flex-column" ]
+      div [ Html.Attributes.class "col-1" ] []
+      , div [ Html.Attributes.class "col-10 flex flex-column" ]
         [
           div [ Html.Attributes.style [("height", "40px")] ] []
-          , App.Components.Chessboard.View.view (getChessboardDimensions model.windowDimensions) childChessboardActions model.chessboard
+          , App.Components.Chessboard.View.view childChessboardActions model.chessboard
           , div [ Html.Attributes.style [("height", "40px")] ] []
         ]
-      , div [ Html.Attributes.class "flex-auto" ] []
+      , div [ Html.Attributes.class "col-1" ] []
     ]
-
-getChessboardDimensions: (Int,Int) -> (Int, Int)
-getChessboardDimensions (w,h) =
-  (truncate (toFloat w * 0.9), h - 80)
