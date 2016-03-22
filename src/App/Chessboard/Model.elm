@@ -19,15 +19,12 @@ type BoardSquare
   = Empty
   | FilledWith Team ChessPiece
 
-type alias Chessboard = {
-    squares: Array (Array BoardSquare)
-  }
+type alias Row = Array BoardSquare
 
-{--
-Chess Board is represented by an array of arrays.
-First array is array of rows, second represents the column -> (x,y)
-TODO: can I use the type system to better define this?
---}
+type alias Chessboard = {
+    squares: Array Row
+  }  
+
 initialBoard : Chessboard
 initialBoard = {
     squares = Array.fromList [
