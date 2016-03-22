@@ -52,7 +52,9 @@ getChessPieceSvg team path =
   let
     (fillColor, strokeColor) =  getColorFromTeam team
   in
-    g [ stroke (colorToHex strokeColor), fill (colorToHex fillColor) ]
+    g [ stroke (colorToHex strokeColor)
+      , fill (colorToHex fillColor)
+      , pointerEvents "none" ]
     [ path ]
 
 -- get the (fill, stroke) colors based on the players team

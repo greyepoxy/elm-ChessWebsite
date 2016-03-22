@@ -1,4 +1,4 @@
-module App.Chessboard.Model (Team(White,Black), ChessPiece(King,Queen,Rook,Bishop,Knight,Pawn), BoardSquare(Empty,FilledWith), Chessboard, initialBoard) where
+module App.Chessboard.Model (Team(White,Black), ChessPiece(King,Queen,Rook,Bishop,Knight,Pawn), BoardSquare(Empty,FilledWith), Row, Chessboard, initialBoard) where
 
 import Array exposing (Array)
 
@@ -23,6 +23,7 @@ type alias Row = Array BoardSquare
 
 type alias Chessboard = {
     squares: Array Row
+    , selectedSquareLoc: Maybe (Int,Int)
   }  
 
 initialBoard : Chessboard
@@ -37,6 +38,7 @@ initialBoard = {
       , Array.repeat 8 (FilledWith Black Pawn)
       , getInitialTopOrBottomRow Black
     ]
+    , selectedSquareLoc = Nothing
   }
 
 getInitialTopOrBottomRow : Team -> Array BoardSquare
