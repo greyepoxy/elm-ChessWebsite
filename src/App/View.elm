@@ -6,11 +6,11 @@ import App.Actions exposing (..)
 import App.Model exposing (..)
 
 
-import App.Components.ChessPieces exposing (..)
+import App.ChessPieces exposing (..)
 
-import App.Components.Chessboard.Model exposing (Chessboard)
-import App.Components.Chessboard.View
-import App.Components.Chessboard.Actions
+import App.Chessboard.Model exposing (Chessboard)
+import App.Chessboard.View
+import App.Chessboard.Actions
 
 view : Signal.Address Action -> AppModel -> Html
 view address model =
@@ -24,7 +24,7 @@ view address model =
       , div [ Html.Attributes.class "col-10 flex flex-column" ]
         [
           div [ Html.Attributes.style [("height", "40px")] ] []
-          , App.Components.Chessboard.View.view childChessboardActions model.chessboard
+          , App.Chessboard.View.view childChessboardActions model.chessboard
           , div [ Html.Attributes.style [("height", "40px")] ] []
         ]
       , div [ Html.Attributes.class "col-1" ] []

@@ -1,4 +1,4 @@
-module App.Components.Chessboard.View (..) where
+module App.Chessboard.View (..) where
 
 import Array exposing (Array)
 import Color exposing (Color)
@@ -6,9 +6,9 @@ import Color.Convert exposing (colorToHex)
 import Html exposing (Html)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import App.Components.Chessboard.Actions exposing (..)
-import App.Components.Chessboard.Model exposing (..)
-import App.Components.ChessPieces as ChessPieces
+import App.Chessboard.Actions exposing (..)
+import App.Chessboard.Model exposing (..)
+import App.ChessPieces as ChessPieces
 
 numSquares = 8
 

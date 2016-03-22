@@ -1,11 +1,11 @@
-module App.Components.ChessPieces (..) where
+module App.ChessPieces (..) where
 
 import Color exposing (Color)
 import Color.Convert exposing (colorToHex)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 
-import App.Components.Chessboard.Model exposing (Team(White, Black), ChessPiece(King, Queen, Bishop, Rook, Knight, Pawn))
+import App.Chessboard.Model exposing (Team(White, Black), ChessPiece(King, Queen, Bishop, Rook, Knight, Pawn))
 
 defaultSize = 150
 

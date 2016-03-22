@@ -1,4 +1,4 @@
-module App.Components.Chessboard.Model (Team(White,Black), ChessPiece(King,Queen,Rook,Bishop,Knight,Pawn), BoardSquare(Empty,FilledWith), Chessboard, initialBoard) where
+module App.Chessboard.Model (Team(White,Black), ChessPiece(King,Queen,Rook,Bishop,Knight,Pawn), BoardSquare(Empty,FilledWith), Chessboard, initialBoard) where
 
 import Array exposing (Array)
 

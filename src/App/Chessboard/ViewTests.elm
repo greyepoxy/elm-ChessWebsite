@@ -1,6 +1,6 @@
-module App.Components.Chessboard.ViewTests(tests) where
+module App.Chessboard.ViewTests(tests) where
 
-import App.Components.Chessboard.View exposing (..)
+import App.Chessboard.View exposing (..)
 import Color
 
 import ElmTest exposing (..)

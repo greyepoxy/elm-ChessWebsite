@@ -2,8 +2,8 @@ module App.Update (..) where
 
 import App.Model exposing (..)
 import App.Actions exposing (..)
-import App.Components.Chessboard.Model
-import App.Components.Chessboard.Update
+import App.Chessboard.Model
+import App.Chessboard.Update
 import Effects exposing (Effects)
 
 
@@ -14,6 +14,6 @@ update action model =
     Resize dimensions -> ( {model | windowDimensions = dimensions }, Effects.none )
     ChildBoardActions action ->
       let
-        (newChessboard, effects) = App.Components.Chessboard.Update.update action model.chessboard
+        (newChessboard, effects) = App.Chessboard.Update.update action model.chessboard
       in
         ( {model | chessboard = newChessboard }, Effects.map (\a -> ChildBoardActions a) effects )

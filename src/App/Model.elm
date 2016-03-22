@@ -1,6 +1,6 @@
 module App.Model (..) where
 
-import App.Components.Chessboard.Model exposing (..)
+import App.Chessboard.Model exposing (..)
 
 type alias AppModel = {
     chessboard: Chessboard
