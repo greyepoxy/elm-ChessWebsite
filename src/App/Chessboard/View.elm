@@ -19,7 +19,8 @@ view address chessboard =
     squareSize = 150
     boardSize = squareSize * numSquares
   in
-    indexedMap (getSquareAsSvg squareSize address chessboard.selectedSquareLoc) chessboard.squares
+    indexedMap (ifBoardSquareIsSelectedMarkAsEmpty chessboard.selectedSquareLoc) chessboard.squares
+      |> indexedMap (getSquareAsSvg squareSize address)
       |> getArrayOfArraysAsFlatList
       |> Svg.svg [class "mx-auto"
         , preserveAspectRatio "xMidYMid meet"  
@@ -49,8 +50,8 @@ getSquareColor: (Int, Int) -> Color
 getSquareColor (x,y) =
   if (x + y) % 2 == 0 then Color.white else Color.charcoal
 
-isBoardSquareActuallyEmptyBecauseSelected: (Int, Int) -> BoardSquare -> Maybe (Int,Int) -> BoardSquare
-isBoardSquareActuallyEmptyBecauseSelected (x,y) originalSquare selectedSquare =
+ifBoardSquareIsSelectedMarkAsEmpty: Maybe (Int,Int) -> (Int, Int) -> BoardSquare -> BoardSquare
+ifBoardSquareIsSelectedMarkAsEmpty selectedSquare (x,y) originalSquare =
   case originalSquare of
     Empty -> originalSquare
     FilledWith team piece ->
@@ -59,11 +60,10 @@ isBoardSquareActuallyEmptyBecauseSelected (x,y) originalSquare selectedSquare =
         Just (x',y') ->
           if x == x' && y == y' then Empty else originalSquare
 
-getSquareAsSvg: Int -> Signal.Address Action -> Maybe (Int,Int) -> (Int, Int) -> BoardSquare -> Svg
-getSquareAsSvg squareSize address selectedSquare squarePos square =
+getSquareAsSvg: Int -> Signal.Address Action -> (Int, Int) -> BoardSquare -> Svg
+getSquareAsSvg squareSize address squarePos square =
   let
     (xPos, yPos) = translateToScreenCoordinates squareSize squarePos
-    actualBoardSquare = isBoardSquareActuallyEmptyBecauseSelected squarePos square selectedSquare
   in
     Svg.g [
       transform ("translate(" ++ (toString xPos) ++ "," ++ (toString yPos) ++ ")")
@@ -76,7 +76,7 @@ getSquareAsSvg squareSize address selectedSquare squarePos square =
         , onMouseDown (Signal.message address (StartMovingPieceAt squarePos))
         , onMouseUp (Signal.message address (StopMovingPieceAt (Just squarePos)))
       ] []
-      , getBoardSquareAsSvg squareSize actualBoardSquare
+      , getBoardSquareAsSvg squareSize square
     ]
 
 getBoardSquareAsSvg: Int -> BoardSquare -> Svg
