@@ -8,5 +8,14 @@ update : Action -> Chessboard -> ( Chessboard, Effects Action )
 update action model =
   case action of
     NoOp -> ( model, Effects.none )
-    StartMovingPieceAt (x,y) -> ( {model | selectedSquareLoc= Just (x,y)} , Effects.none )
-    StopMovingPieceAt maybeALoc -> ( {model | selectedSquareLoc= Nothing}, Effects.none )
+    SelectLocation loc -> ( 
+      { model | 
+        selectedSquareLoc= (updateSelectedSquareLoc model.selectedSquareLoc loc)
+      }
+      , Effects.none )
+
+updateSelectedSquareLoc: Maybe (Int,Int) -> (Int, Int) -> Maybe (Int, Int)
+updateSelectedSquareLoc previousSelectedLoc newSelectedLoc=
+  case previousSelectedLoc of
+    Nothing -> Just newSelectedLoc
+    Just _ -> Nothing

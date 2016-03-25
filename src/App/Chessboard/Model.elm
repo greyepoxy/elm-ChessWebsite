@@ -52,3 +52,4 @@ getInitialTopOrBottomRow team = Array.fromList [
     , FilledWith team Knight
     , FilledWith team Rook
   ]
+

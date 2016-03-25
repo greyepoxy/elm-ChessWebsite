@@ -1,6 +1,6 @@
 module TestRunner where
 
-import App.Chessboard.ViewTests
+import App.Chessboard.Tests
 
 import ElmTest exposing (..)
 import Graphics.Element exposing (Element)
@@ -8,7 +8,7 @@ import Graphics.Element exposing (Element)
 allTests : Test
 allTests =
   suite "All tests"
-    [ App.Chessboard.ViewTests.tests
+    [ App.Chessboard.Tests.tests
     ]
 
 main : Element
