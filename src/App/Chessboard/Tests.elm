@@ -4,6 +4,7 @@ import App.Chessboard.Model exposing (..)
 import App.Chessboard.View exposing (..)
 import Color
 
+import App.TestExtensions.AdditionalAssertions exposing (assertContainsOnly)
 import ElmTest exposing (..)
 
 tests : Test
@@ -83,11 +84,5 @@ testMoveLocationsForEmptySquare =
 testMoveLocationsForPawnFilledSquare =
   suite "Pawn should move correctly"
   [ test "Should be able to move one space or two on first move"
-      <| assert (containsAll [(0,2), (0,3)] (getPossibleMoveLocations initialBoard (0,1)))
+      <| assertContainsOnly [(0,2), (0,3)] (getPossibleMoveLocations initialBoard (0,1))
   ]
-
-containsAll: List a -> List a -> Bool
-containsAll itemsToCheckFor list =
-  itemsToCheckFor
-    |> List.map (\a -> List.member a list)
-    |> List.foldl (\a b -> a && b) True
