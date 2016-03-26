@@ -1,5 +1,6 @@
 module App.Chessboard.Tests (tests) where
 
+import Array exposing (Array)
 import App.Chessboard.Model exposing (..)
 import App.Chessboard.View exposing (..)
 import Color
@@ -66,8 +67,8 @@ canConvertFromPosAndSquareToDrawableSquare =
     convertSquareToDrawableSquare (0,0) (FilledWith White Pawn)
 
 canConvertFromBoardPositionToScreenCoordinates =
-  test "Can convert from board position and square to screen coordinates"
-    <| (200, 500) `assertEqual` translateToScreenCoordinates 100 (2,5)
+  test "Can convert from board position and square to screen coordinates" <| 
+    (200, 500) `assertEqual` translateToScreenCoordinates 100 (2,5)
 
 
 modelTests : Test
@@ -78,11 +79,51 @@ modelTests =
     ]
 
 testMoveLocationsForEmptySquare =
-  test "Should be no possible move locations for an Empty Square"
-    <| [] `assertEqual` getPossibleMoveLocations initialBoard (2,5)
+  test "Should be no possible move locations for an Empty Square" <| 
+    [] `assertEqual` getPossibleMoveLocations (2,5) initialBoard.squares
 
 testMoveLocationsForPawnFilledSquare =
   suite "Pawn should move correctly"
-  [ test "Should be able to move one space or two on first move"
-      <| assertContainsOnly [(0,2), (0,3)] (getPossibleMoveLocations initialBoard (0,1))
+  [ test "Should be able to move one space or two on first move" <|
+      [(0,2), (0,3)] `assertContainsOnly` (getPossibleMoveLocations (0,1) initialBoard.squares)
+    , test "Should only be able to move one space after first move" <|
+      [(0,3)] `assertContainsOnly`
+      getPossibleMoveLocations (0,2) (getChessboardWithGivenSquares [((0,2), (FilledWith White Pawn))])
+    , test "Should be able to take opposing pieces in diagonal positions" <|
+      [(2,3),(0,3)] `assertContainsOnly`
+      getPossibleMoveLocations (1,2) 
+        (getChessboardWithGivenSquares [
+          ((1,2), (FilledWith White Pawn))
+          , ((2,3), (FilledWith Black Pawn))
+          , ((0,3), (FilledWith Black Rook))
+          , ((1,3), (FilledWith Black Bishop))])
+    , test "Cannot move off of board" <|
+      [] `assertContainsOnly`
+      getPossibleMoveLocations (0,7) (getChessboardWithGivenSquares [((0,7), (FilledWith White Pawn))])
+    , test "Should move up if on Black team" <|
+      [(0,4)] `assertContainsOnly`
+      getPossibleMoveLocations (0,5) (getChessboardWithGivenSquares [((0,5), (FilledWith Black Pawn))])
   ]
+
+getChessboardWithGivenSquares: List ((Int,Int), BoardSquare) -> Chessboard
+getChessboardWithGivenSquares squaresToSet =
+  getEmptyChessboard
+    |> updateChessboardWithGivenSquares squaresToSet
+
+updateChessboardWithGivenSquares: List ((Int,Int), BoardSquare) -> Chessboard -> Chessboard
+updateChessboardWithGivenSquares squaresToSet squares =
+  List.foldl (\(loc, square) squares -> setPieceAtLoc loc square squares) squares squaresToSet 
+
+getEmptyChessboard: Chessboard
+getEmptyChessboard = Array.repeat 8 (Array.repeat 8 Empty)
+
+setPieceAtLoc: (Int,Int) -> BoardSquare -> Chessboard -> Chessboard
+setPieceAtLoc (x,y) squareToSet squares =
+  let
+    newRow = 
+      Array.get y squares
+        |> Maybe.map (Array.set x squareToSet)
+  in
+    case newRow of
+      Nothing -> squares
+      Just row -> Array.set y row squares 

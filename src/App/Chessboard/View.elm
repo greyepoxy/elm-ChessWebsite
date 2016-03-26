@@ -25,7 +25,7 @@ getArrayOfArraysAsFlatList: Array (Array b) -> List b
 getArrayOfArraysAsFlatList arrayOfArrays =
   Array.foldl (\col flatList -> List.append flatList (Array.toList col)) [] arrayOfArrays
 
-view : Signal.Address Action -> Chessboard -> Html
+view : Signal.Address Action -> InteractiveChessboard -> Html
 view address chessboard =
   let 
     squareSize = 150

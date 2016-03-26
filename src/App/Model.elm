@@ -3,7 +3,7 @@ module App.Model (..) where
 import App.Chessboard.Model exposing (..)
 
 type alias AppModel = {
-    chessboard: Chessboard
+    chessboard: InteractiveChessboard
     , windowDimensions: (Int, Int)
   }
 

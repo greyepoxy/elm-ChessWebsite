@@ -2,7 +2,7 @@ module App.Chessboard.Model (
   Team(White,Black)
   , ChessPiece(King,Queen,Rook,Bishop,Knight,Pawn)
   , BoardSquare(Empty,FilledWith)
-  , Row, Chessboard, initialBoard, getPossibleMoveLocations) where
+  , Row, Chessboard, InteractiveChessboard, initialBoard, getPossibleMoveLocations) where
 
 import Array exposing (Array)
 
@@ -25,12 +25,14 @@ type BoardSquare
 
 type alias Row = Array BoardSquare
 
-type alias Chessboard = {
+type alias Chessboard = Array Row
+
+type alias InteractiveChessboard = {
     squares: Array Row
     , selectedSquareLoc: Maybe (Int,Int)
-  }  
+  }
 
-initialBoard : Chessboard
+initialBoard : InteractiveChessboard
 initialBoard = {
     squares = Array.fromList [
       getInitialTopOrBottomRow White
@@ -66,10 +68,10 @@ type alias BoardSquareWithLoc = {
   Get every possible move location for a given board square
   at the given location in the given chessboard. 
 --}
-getPossibleMoveLocations: Chessboard -> (Int,Int) -> List (Int, Int)
-getPossibleMoveLocations board testLoc =
+getPossibleMoveLocations: (Int,Int) -> Chessboard -> List (Int, Int)
+getPossibleMoveLocations testLoc board =
   let
-    maybeSquare = getBoardSquareAtLocation board testLoc
+    maybeSquare = getBoardSquareAtLocation testLoc board
   in
     case maybeSquare of
       Nothing -> []
@@ -79,13 +81,13 @@ getPossibleMoveLocations board testLoc =
           case piece of
             Pawn -> 
               getIdealPawnMoveLocations team testLoc 
-                |> List.filter (canPieceMoveToLoc board)
+                |> List.filter (isValidMoveLocForPieceOfTeam team board)
                 |> List.map (\moveLoc -> moveLoc.loc)
             _ -> []
 
-getBoardSquareAtLocation: Chessboard -> (Int,Int) -> Maybe BoardSquare
-getBoardSquareAtLocation board (x,y) =
-  Array.get y board.squares
+getBoardSquareAtLocation: (Int,Int) -> Chessboard -> Maybe BoardSquare
+getBoardSquareAtLocation (x,y) board =
+  Array.get y board
     `Maybe.andThen` Array.get x
 
 type CanMoveIf = 
@@ -97,9 +99,15 @@ type alias MoveLoc = {
     , loc: (Int, Int)
   }
  
-canPieceMoveToLoc: Chessboard -> MoveLoc -> Bool
-canPieceMoveToLoc board moveLoc =
-  True
+isValidMoveLocForPieceOfTeam: Team -> Chessboard -> MoveLoc -> Bool
+isValidMoveLocForPieceOfTeam movingPiecesTeam board moveLoc =
+  let
+    maybeBoardSquareAtLoc = getBoardSquareAtLocation moveLoc.loc board
+  in
+    case maybeBoardSquareAtLoc of
+      Nothing -> False
+      Just Empty -> moveLoc.conditions == LocationEmpty
+      Just (FilledWith team _) -> moveLoc.conditions == LocationContainsOpponent && movingPiecesTeam /= team
 
 getIdealPawnMoveLocations: Team -> (Int,Int) -> List MoveLoc
 getIdealPawnMoveLocations team (curX,curY) =
@@ -110,5 +118,8 @@ getIdealPawnMoveLocations team (curX,curY) =
       Black -> if curY == 6 then True else False
     additionalMoveLoc = if atStartLoc then [{conditions = LocationEmpty, loc = (curX,curY+2*moveDir)}] else [] 
   in
-    [{conditions = LocationEmpty, loc = (curX,curY+moveDir)}]
+    [{conditions = LocationEmpty, loc = (curX,curY+moveDir)}
+      , {conditions = LocationContainsOpponent, loc = (curX+1,curY+moveDir)}
+      , {conditions = LocationContainsOpponent, loc = (curX-1,curY+moveDir)}
+    ]
       |> List.append additionalMoveLoc

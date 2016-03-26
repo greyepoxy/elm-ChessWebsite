@@ -4,7 +4,7 @@ import App.Chessboard.Model exposing (..)
 import App.Chessboard.Actions exposing (..)
 import Effects exposing (Effects)
 
-update : Action -> Chessboard -> ( Chessboard, Effects Action )
+update : Action -> InteractiveChessboard -> ( InteractiveChessboard, Effects Action )
 update action model =
   case action of
     NoOp -> ( model, Effects.none )
