@@ -14,7 +14,7 @@ import App.ChessPieces as ChessPieces
 type alias DrawableSquare = {
   boardPosition: (Int, Int)
   , square: BoardSquare
-  , selected: Bool
+  , color: Color
 }
 
 indexedMap: ((Int, Int)-> b -> a) -> Array (Array b) -> Array (Array a)
@@ -33,7 +33,7 @@ view address chessboard =
   in
     indexedMap convertSquareToDrawableSquare chessboard.squares
       |> getArrayOfArraysAsFlatList
-      |> List.map (markDrawableSquareAsSelected chessboard.selectedSquareLoc)
+      |> List.map (ifDrawableSquareSelectedChangeColor chessboard.selectedSquareLoc)
       |> List.map (getSquareAsSvg squareSize address)
       |> Svg.svg [class "mx-auto"
         , preserveAspectRatio "xMidYMid meet"  
@@ -58,16 +58,16 @@ convertSquareToDrawableSquare: (Int, Int) -> BoardSquare -> DrawableSquare
 convertSquareToDrawableSquare pos square = {
     boardPosition = pos
     , square = square
-    , selected = False
+    , color = (getSquareColor pos)
   }
 
-markDrawableSquareAsSelected: Maybe (Int, Int) -> DrawableSquare -> DrawableSquare
-markDrawableSquareAsSelected selectedSquare original =
+ifDrawableSquareSelectedChangeColor: Maybe (Int, Int) -> DrawableSquare -> DrawableSquare
+ifDrawableSquareSelectedChangeColor selectedSquare original =
   case original.square of
     Empty -> original
     FilledWith team _ ->
       if (doPositionsMatch selectedSquare original.boardPosition) 
-        then { original | selected= True }
+        then { original | color = Color.lightYellow }
         else original
 
 doPositionsMatch: Maybe (Int, Int) -> (Int,Int) -> Bool
@@ -80,10 +80,6 @@ getSquareAsSvg: Int -> Signal.Address Action -> DrawableSquare -> Svg
 getSquareAsSvg squareSize address drawableSquare =
   let
     (xPos, yPos) = translateToScreenCoordinates squareSize drawableSquare.boardPosition
-    squareColor = 
-      if drawableSquare.selected 
-        then Color.lightYellow 
-        else (getSquareColor drawableSquare.boardPosition)
   in
     Svg.g [
       transform ("translate(" ++ (toString xPos) ++ "," ++ (toString yPos) ++ ")")
@@ -92,7 +88,7 @@ getSquareAsSvg squareSize address drawableSquare =
       Svg.rect [ 
         width (toString squareSize)
         , height (toString squareSize)
-        , fill (colorToHex squareColor)
+        , fill (colorToHex drawableSquare.color)
         , onClick (Signal.message address (SelectLocation drawableSquare.boardPosition))
       ] []
       , getBoardSquareAsSvg squareSize drawableSquare.square

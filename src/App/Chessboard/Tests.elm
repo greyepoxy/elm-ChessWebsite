@@ -41,23 +41,23 @@ testDrawableSquare: DrawableSquare
 testDrawableSquare = {
     boardPosition = (0,0)
     , square = FilledWith White Pawn
-    , selected = False
+    , color = Color.white
   }
 
 testsForViewMarkDrawableSquareAsSelected =
-  suite "Can mark Drawable Squares As Selected"
+  suite "Can change color of Drawable Squares if Selected"
     [ test "Nothing should return original square" <|
-        testDrawableSquare `assertEqual` (markDrawableSquareAsSelected Nothing testDrawableSquare)
+        testDrawableSquare `assertEqual` (ifDrawableSquareSelectedChangeColor Nothing testDrawableSquare)
       , test "Different board position should return original square" <|
-        testDrawableSquare `assertEqual` (markDrawableSquareAsSelected (Just (1,1)) testDrawableSquare)
-      , test "Same board position should return original square selected" <|
-        { testDrawableSquare | selected = True } 
+        testDrawableSquare `assertEqual` (ifDrawableSquareSelectedChangeColor (Just (1,1)) testDrawableSquare)
+      , test "Same board position should return original square but with lightYellow color" <|
+        { testDrawableSquare | color = Color.lightYellow } 
         `assertEqual` 
-        (markDrawableSquareAsSelected (Just (0,0)) testDrawableSquare)
+        (ifDrawableSquareSelectedChangeColor (Just (0,0)) testDrawableSquare)
       , test "Same board position but Empty square should return original square" <|
         { testDrawableSquare | square = Empty} 
         `assertEqual`
-        (markDrawableSquareAsSelected (Just (0,0)) { testDrawableSquare | square = Empty}) 
+        (ifDrawableSquareSelectedChangeColor (Just (0,0)) { testDrawableSquare | square = Empty}) 
     ]
  
 canConvertFromPosAndSquareToDrawableSquare =
