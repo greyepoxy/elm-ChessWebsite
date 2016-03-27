@@ -47,17 +47,17 @@ testDrawableSquare = {
 testsForViewMarkDrawableSquareAsSelected =
   suite "Can change color of Drawable Squares if Selected"
     [ test "Nothing should return original square" <|
-        testDrawableSquare `assertEqual` (ifDrawableSquareSelectedChangeColor Nothing testDrawableSquare)
+        testDrawableSquare `assertEqual` (ifSelectedChangeColor Nothing testDrawableSquare)
       , test "Different board position should return original square" <|
-        testDrawableSquare `assertEqual` (ifDrawableSquareSelectedChangeColor (Just (1,1)) testDrawableSquare)
+        testDrawableSquare `assertEqual` (ifSelectedChangeColor (Just (1,1)) testDrawableSquare)
       , test "Same board position should return original square but with lightYellow color" <|
         { testDrawableSquare | color = Color.lightYellow } 
         `assertEqual` 
-        (ifDrawableSquareSelectedChangeColor (Just (0,0)) testDrawableSquare)
+        (ifSelectedChangeColor (Just (0,0)) testDrawableSquare)
       , test "Same board position but Empty square should return original square" <|
         { testDrawableSquare | square = Empty} 
         `assertEqual`
-        (ifDrawableSquareSelectedChangeColor (Just (0,0)) { testDrawableSquare | square = Empty}) 
+        (ifSelectedChangeColor (Just (0,0)) { testDrawableSquare | square = Empty}) 
     ]
  
 canConvertFromPosAndSquareToDrawableSquare =

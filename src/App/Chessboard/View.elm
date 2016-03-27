@@ -33,7 +33,10 @@ view address chessboard =
   in
     indexedMap convertSquareToDrawableSquare chessboard.squares
       |> getArrayOfArraysAsFlatList
-      |> List.map (ifDrawableSquareSelectedChangeColor chessboard.selectedSquareLoc)
+      |> List.map (ifSelectedChangeColor chessboard.selectedSquareLoc)
+      |> List.map 
+        (ifAPossibleMoveLocationChangeColor 
+          (getPossibleMoveLocs chessboard.squares chessboard.selectedSquareLoc))
       |> List.map (getSquareAsSvg squareSize address)
       |> Svg.svg [class "mx-auto"
         , preserveAspectRatio "xMidYMid meet"  
@@ -61,8 +64,19 @@ convertSquareToDrawableSquare pos square = {
     , color = (getSquareColor pos)
   }
 
-ifDrawableSquareSelectedChangeColor: Maybe (Int, Int) -> DrawableSquare -> DrawableSquare
-ifDrawableSquareSelectedChangeColor selectedSquare original =
+getPossibleMoveLocs: Chessboard -> Maybe (Int, Int) -> List (Int, Int)
+getPossibleMoveLocs board selectedSquare =
+  Maybe.map (\loc -> getPossibleMoveLocations loc board) selectedSquare
+    |> Maybe.withDefault []
+
+ifAPossibleMoveLocationChangeColor: List (Int, Int) -> DrawableSquare -> DrawableSquare
+ifAPossibleMoveLocationChangeColor possibleMoveLocs original =
+  if List.member original.boardPosition possibleMoveLocs
+    then { original | color = Color.lightGreen }
+    else original
+
+ifSelectedChangeColor: Maybe (Int, Int) -> DrawableSquare -> DrawableSquare
+ifSelectedChangeColor selectedSquare original =
   case original.square of
     Empty -> original
     FilledWith team _ ->
