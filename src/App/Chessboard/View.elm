@@ -17,14 +17,6 @@ type alias DrawableSquare = {
   , color: Color
 }
 
-indexedMap: ((Int, Int)-> b -> a) -> Array (Array b) -> Array (Array a)
-indexedMap funcToMap items =
-  Array.indexedMap (\y col -> Array.indexedMap (\x item -> funcToMap (x,y) item) col) items
-
-getArrayOfArraysAsFlatList: Array (Array b) -> List b
-getArrayOfArraysAsFlatList arrayOfArrays =
-  Array.foldl (\col flatList -> List.append flatList (Array.toList col)) [] arrayOfArrays
-
 view : Signal.Address Action -> InteractiveChessboard -> Html
 view address chessboard =
   let 

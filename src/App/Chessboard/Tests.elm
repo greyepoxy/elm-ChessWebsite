@@ -77,6 +77,11 @@ modelTests =
     [ testMoveLocationsForEmptySquare
       , testMoveLocationsForPawnFilledSquare
       , testMoveLocationsForRookFilledSquare
+      , testMoveLocationsForKnightFilledSquare
+      , testMoveLocationsForBishopFilledSquare
+      , testMoveLocationsForQueenFilledSquare
+      , testMoveLocationsForKingFilledSquare
+      , testMoveLocationsForWhenKingIsInCheck
     ]
 
 testMoveLocationsForEmptySquare =
@@ -125,6 +130,82 @@ testMoveLocationsForRookFilledSquare =
           ,((1,0), FilledWith Black Bishop)
           ,((0,1), FilledWith White Bishop)])
   ]
+  
+testMoveLocationsForKnightFilledSquare =
+  suite "Knight should move correctly"
+  [ test "Should be able to move to locations at L's from start location." <|
+      [(5,2),(5,4),(1,2),(2,5),(4,5),(2,1),(2,5)]
+      `assertContainsOnly`
+      getPossibleMoveLocations (3,3) 
+        (getChessboardWithGivenSquares [
+          ((3,3), FilledWith White Knight)
+          ,((5,4), FilledWith Black Pawn)
+          ,((1,4), FilledWith White Pawn)])
+    , test "Can jump over pieces." <|
+      [(0,2),(2,2)]
+      `assertContainsOnly`
+      getPossibleMoveLocations (1,0) initialBoard.squares
+  ]
+
+testMoveLocationsForBishopFilledSquare =
+  suite "Bishop should move correctly"
+  [ test "Should be able to slide to any location diagonally." <|
+      [(2,2),(1,1),(0,0),(4,4),(5,5),(6,6),(7,7),(4,2),(5,1),(6,0),(2,4),(1,5),(0,6)]
+      `assertContainsOnly`
+      getPossibleMoveLocations (3,3) (getChessboardWithGivenSquares [((3,3), FilledWith White Bishop)])
+    , test "Should be able to take opposing player piece but not a friendly one." <|
+      [(0,1)]
+      `assertContainsOnly`
+      getPossibleMoveLocations (1,0) 
+        (getChessboardWithGivenSquares [
+          ((1,0), FilledWith White Bishop)
+          ,((0,1), FilledWith Black Rook)
+          ,((2,1), FilledWith White Pawn)])
+  ]
+
+testMoveLocationsForQueenFilledSquare =
+  suite "Queen should move correctly"
+  [ test "should be able to slid around like bishop and rook." <|
+      [(3,2),(2,1),(0,0),(2,0),(3,0),(4,0),(5,0),(6,0),(7,0)]
+      `assertContainsOnly`
+      getPossibleMoveLocations (1,0)
+        (getChessboardWithGivenSquares [
+          ((1,0), FilledWith White Queen)
+          ,((0,1), FilledWith White Rook)
+          ,((1,1), FilledWith White Pawn)
+          ,((3,2), FilledWith Black Pawn)
+        ])
+  ]
+
+testMoveLocationsForKingFilledSquare =
+  suite "King should move correctly"
+  [ test "should be able to move one square in any direction." <|
+      [(2,2),(3,2),(4,2),(4,3),(4,4),(3,4),(2,4),(2,3)]
+      `assertContainsOnly`
+      getPossibleMoveLocations (3,3) (getChessboardWithGivenSquares [((3,3), FilledWith White King)])
+  ]
+  
+testMoveLocationsForWhenKingIsInCheck =
+  suite "When King is in check"
+  [ test "should only allow moves that do not put player king into check." <|
+      []
+      `assertContainsOnly`
+      getPossibleMoveLocations (1,1) 
+        (getChessboardWithGivenSquares [
+          ((0,0), FilledWith White King)
+          ,((1,1), FilledWith White Pawn)
+          ,((3,3), FilledWith Black Bishop)
+        ])
+    , test "should not be allowed to move into check." <|
+      [(0,1)]
+      `assertContainsOnly`
+      getPossibleMoveLocations (0,0) 
+        (getChessboardWithGivenSquares [
+          ((0,0), FilledWith White King)
+          ,((1,1), FilledWith White Pawn)
+          ,((2,1), FilledWith Black Bishop)
+        ])
+  ]
 
 getChessboardWithGivenSquares: List ((Int,Int), BoardSquare) -> Chessboard
 getChessboardWithGivenSquares squaresToSet =
@@ -137,14 +218,3 @@ updateChessboardWithGivenSquares squaresToSet squares =
 
 getEmptyChessboard: Chessboard
 getEmptyChessboard = Array.repeat 8 (Array.repeat 8 Empty)
-
-setPieceAtLoc: (Int,Int) -> BoardSquare -> Chessboard -> Chessboard
-setPieceAtLoc (x,y) squareToSet squares =
-  let
-    newRow = 
-      Array.get y squares
-        |> Maybe.map (Array.set x squareToSet)
-  in
-    case newRow of
-      Nothing -> squares
-      Just row -> Array.set y row squares 

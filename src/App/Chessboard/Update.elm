@@ -9,13 +9,16 @@ update action model =
   case action of
     NoOp -> ( model, Effects.none )
     SelectLocation loc -> ( 
-      { model | 
-        selectedSquareLoc= (updateSelectedSquareLoc model.selectedSquareLoc loc)
-      }
+      updateBasedOnSelectedLocAction loc model
       , Effects.none )
 
-updateSelectedSquareLoc: Maybe (Int,Int) -> (Int, Int) -> Maybe (Int, Int)
-updateSelectedSquareLoc previousSelectedLoc newSelectedLoc=
-  case previousSelectedLoc of
-    Nothing -> Just newSelectedLoc
-    Just _ -> Nothing
+updateBasedOnSelectedLocAction: (Int,Int) -> InteractiveChessboard -> InteractiveChessboard
+updateBasedOnSelectedLocAction newSelectedLoc previousModel =
+  case previousModel.selectedSquareLoc of
+    Nothing -> { previousModel | 
+        selectedSquareLoc = Just newSelectedLoc
+      }
+    Just startLoc -> { previousModel | 
+        selectedSquareLoc = Nothing
+        , squares = tryMovePiece previousModel.squares startLoc newSelectedLoc
+      }
