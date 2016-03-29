@@ -76,6 +76,7 @@ modelTests =
   suite "Model Tests"
     [ testMoveLocationsForEmptySquare
       , testMoveLocationsForPawnFilledSquare
+      , testMoveLocationsForRookFilledSquare
     ]
 
 testMoveLocationsForEmptySquare =
@@ -103,6 +104,26 @@ testMoveLocationsForPawnFilledSquare =
     , test "Should move up if on Black team" <|
       [(0,4)] `assertContainsOnly`
       getPossibleMoveLocations (0,5) (getChessboardWithGivenSquares [((0,5), (FilledWith Black Pawn))])
+    , test "Should be able to move only one space on first move if piece in the way" <|
+      [(0,2)] `assertContainsOnly` 
+      getPossibleMoveLocations (0,1) 
+        (getChessboardWithGivenSquares [((0,1), FilledWith White Pawn),((0,3), FilledWith Black Pawn)])
+  ]
+  
+testMoveLocationsForRookFilledSquare =
+  suite "Rook should move correctly"
+  [ test "Should be able to slide in a vertical or horizontal direction." <|
+      [(0,3),(1,3),(2,3),(4,3),(5,3),(6,3),(7,3),(3,0),(3,1),(3,2),(3,4),(3,5),(3,6),(3,7)]
+      `assertContainsOnly`
+      getPossibleMoveLocations (3,3) (getChessboardWithGivenSquares [((3,3), (FilledWith White Rook))])
+    , test "Should be able to take opposing player piece but not a friendly one." <|
+      [(1,0)]
+      `assertContainsOnly`
+      getPossibleMoveLocations (0,0) 
+        (getChessboardWithGivenSquares [
+          ((0,0), FilledWith White Rook)
+          ,((1,0), FilledWith Black Bishop)
+          ,((0,1), FilledWith White Bishop)])
   ]
 
 getChessboardWithGivenSquares: List ((Int,Int), BoardSquare) -> Chessboard
