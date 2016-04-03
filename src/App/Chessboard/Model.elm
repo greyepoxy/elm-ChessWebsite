@@ -5,7 +5,7 @@ module App.Chessboard.Model (
   , indexedMap, getArrayOfArraysAsFlatList
   , Row, Chessboard, ChessGameState, InteractiveChessboard, initialBoard
   , setPieceAtLoc, tryMovePiece, getPossibleMoveLocations
-  , getPossibleMoveLocationsForGameState) where
+  , getPossibleMoveLocationsForGameState, isPlayersTurnForPieceAtLocation) where
 
 import Array exposing (Array)
 
@@ -164,6 +164,19 @@ isPlayerKingInCheck team board =
             |> List.foldl (||) False
 
 {--
+  Determine if the given location contains a piece owned by the current player
+--}
+isPlayersTurnForPieceAtLocation: (Int,Int) -> ChessGameState -> Bool
+isPlayersTurnForPieceAtLocation testLoc {board, totalMovesSoFar} =
+  let
+    maybeSquare = getBoardSquareAtLocation testLoc board
+    currentTeamsMove = if totalMovesSoFar % 2 == 0 then Black else White
+  in
+    case maybeSquare of
+      Just (FilledWith team _) -> team == currentTeamsMove
+      _ -> False
+
+{--
   Returns chessboard after attempting to move given piece.
 --}
 tryMovePiece: ChessGameState -> (Int,Int) -> (Int,Int) -> ChessGameState
@@ -183,16 +196,12 @@ tryMovePiece previousGameState startLoc endLoc =
   Returns the set of possible moves for the given square for the given game state.
 --}
 getPossibleMoveLocationsForGameState: (Int,Int) -> ChessGameState -> List (Int, Int)
-getPossibleMoveLocationsForGameState testLoc {board, totalMovesSoFar} =
+getPossibleMoveLocationsForGameState testLoc state =
   let
-    maybeSquare = getBoardSquareAtLocation testLoc board
-    moveLocs = getPossibleMoveLocations testLoc board
-    currentTeamsMove = if totalMovesSoFar % 2 == 0 then Black else White
+    isPlayersTurn = isPlayersTurnForPieceAtLocation testLoc state
+    moveLocs = getPossibleMoveLocations testLoc state.board
   in
-    case maybeSquare of
-      Just (FilledWith team _) ->
-        if (team == currentTeamsMove) then moveLocs else []
-      _ -> []
+    if isPlayersTurn then moveLocs else []
 
 {--
   Get every possible move location for a given board square

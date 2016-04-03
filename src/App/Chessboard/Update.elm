@@ -16,7 +16,11 @@ updateBasedOnSelectedLocAction: (Int,Int) -> InteractiveChessboard -> Interactiv
 updateBasedOnSelectedLocAction newSelectedLoc previousModel =
   case previousModel.selectedSquareLoc of
     Nothing -> { previousModel | 
-        selectedSquareLoc = Just newSelectedLoc
+        selectedSquareLoc = 
+          let
+            isPlayersTurn = isPlayersTurnForPieceAtLocation newSelectedLoc previousModel.gameState
+          in
+            if isPlayersTurn then (Just newSelectedLoc) else Nothing
       }
     Just startLoc -> { previousModel | 
         selectedSquareLoc = Nothing
