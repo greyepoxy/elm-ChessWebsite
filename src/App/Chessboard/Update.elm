@@ -15,14 +15,22 @@ update action model =
 updateBasedOnSelectedLocAction: (Int,Int) -> InteractiveChessboard -> InteractiveChessboard
 updateBasedOnSelectedLocAction newSelectedLoc previousModel =
   case previousModel.selectedSquareLoc of
-    Nothing -> { previousModel | 
-        selectedSquareLoc = 
-          let
-            isPlayersTurn = isPlayersTurnForPieceAtLocation newSelectedLoc previousModel.gameState
-          in
-            if isPlayersTurn then (Just newSelectedLoc) else Nothing
-      }
-    Just startLoc -> { previousModel | 
-        selectedSquareLoc = Nothing
-        , gameState = tryMovePiece previousModel.gameState startLoc newSelectedLoc
-      }
+    Nothing -> selectLocation newSelectedLoc previousModel
+    Just startLoc ->
+      let
+        isPieceAtNewSelectedLocPlayers = isPlayersTurnForPieceAtLocation newSelectedLoc previousModel.gameState
+      in
+        case isPieceAtNewSelectedLocPlayers of
+          True -> selectLocation newSelectedLoc previousModel
+          False -> { previousModel | 
+              selectedSquareLoc = Nothing
+              , gameState = tryMovePiece previousModel.gameState startLoc newSelectedLoc
+            }
+
+selectLocation: (Int,Int) -> InteractiveChessboard -> InteractiveChessboard
+selectLocation newSelectedLoc previousModel =
+  let
+    isPlayersTurn = isPlayersTurnForPieceAtLocation newSelectedLoc previousModel.gameState
+    actualSelectedLoc = if isPlayersTurn then (Just newSelectedLoc) else Nothing 
+  in
+    { previousModel | selectedSquareLoc = actualSelectedLoc }
