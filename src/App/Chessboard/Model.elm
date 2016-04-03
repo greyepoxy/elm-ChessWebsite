@@ -66,8 +66,8 @@ getInitialTopOrBottomRow team = Array.fromList [
     FilledWith team Rook
     , FilledWith team Knight
     , FilledWith team Bishop
-    , FilledWith team Queen
     , FilledWith team King
+    , FilledWith team Queen
     , FilledWith team Bishop
     , FilledWith team Knight
     , FilledWith team Rook
