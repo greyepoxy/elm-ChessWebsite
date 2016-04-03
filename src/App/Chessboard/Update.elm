@@ -20,5 +20,5 @@ updateBasedOnSelectedLocAction newSelectedLoc previousModel =
       }
     Just startLoc -> { previousModel | 
         selectedSquareLoc = Nothing
-        , squares = tryMovePiece previousModel.squares startLoc newSelectedLoc
+        , gameState = tryMovePiece previousModel.gameState startLoc newSelectedLoc
       }

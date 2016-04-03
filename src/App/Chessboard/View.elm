@@ -18,17 +18,18 @@ type alias DrawableSquare = {
 }
 
 view : Signal.Address Action -> InteractiveChessboard -> Html
-view address chessboard =
+view address {gameState, selectedSquareLoc} =
   let 
+    board = gameState.board
     squareSize = 150
-    boardSize = squareSize * (Array.length chessboard.squares)
+    boardSize = squareSize * (Array.length board)
   in
-    indexedMap convertSquareToDrawableSquare chessboard.squares
+    indexedMap convertSquareToDrawableSquare board
       |> getArrayOfArraysAsFlatList
-      |> List.map (ifSelectedChangeColor chessboard.selectedSquareLoc)
+      |> List.map (ifSelectedChangeColor selectedSquareLoc)
       |> List.map 
         (ifAPossibleMoveLocationChangeColor 
-          (getPossibleMoveLocs chessboard.squares chessboard.selectedSquareLoc))
+          (getPossibleMoveLocs gameState selectedSquareLoc))
       |> List.map (getSquareAsSvg squareSize address)
       |> Svg.svg [class "mx-auto"
         , preserveAspectRatio "xMidYMid meet"  
@@ -56,9 +57,9 @@ convertSquareToDrawableSquare pos square = {
     , color = (getSquareColor pos)
   }
 
-getPossibleMoveLocs: Chessboard -> Maybe (Int, Int) -> List (Int, Int)
-getPossibleMoveLocs board selectedSquare =
-  Maybe.map (\loc -> getPossibleMoveLocations loc board) selectedSquare
+getPossibleMoveLocs: ChessGameState -> Maybe (Int, Int) -> List (Int, Int)
+getPossibleMoveLocs state selectedSquare =
+  Maybe.map (\loc -> getPossibleMoveLocationsForGameState loc state) selectedSquare
     |> Maybe.withDefault []
 
 ifAPossibleMoveLocationChangeColor: List (Int, Int) -> DrawableSquare -> DrawableSquare

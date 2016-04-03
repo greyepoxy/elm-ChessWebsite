@@ -3,8 +3,9 @@ module App.Chessboard.Model (
   , ChessPiece(King,Queen,Rook,Bishop,Knight,Pawn)
   , BoardSquare(Empty,FilledWith)
   , indexedMap, getArrayOfArraysAsFlatList
-  , Row, Chessboard, InteractiveChessboard, initialBoard
-  , setPieceAtLoc, tryMovePiece, getPossibleMoveLocations) where
+  , Row, Chessboard, ChessGameState, InteractiveChessboard, initialBoard
+  , setPieceAtLoc, tryMovePiece, getPossibleMoveLocations
+  , getPossibleMoveLocationsForGameState) where
 
 import Array exposing (Array)
 
@@ -29,14 +30,20 @@ type alias Row = Array BoardSquare
 
 type alias Chessboard = Array Row
 
+type alias ChessGameState = {
+  board: Chessboard
+  , totalMovesSoFar: Int
+}
+
 type alias InteractiveChessboard = {
-    squares: Chessboard
+    gameState: ChessGameState
     , selectedSquareLoc: Maybe (Int,Int)
   }
 
 initialBoard : InteractiveChessboard
-initialBoard = {
-    squares = Array.fromList [
+initialBoard = 
+  let
+    board = Array.fromList [
       getInitialTopOrBottomRow White
       , Array.repeat 8 (FilledWith White Pawn)
       , Array.repeat 8 Empty
@@ -46,6 +53,11 @@ initialBoard = {
       , Array.repeat 8 (FilledWith Black Pawn)
       , getInitialTopOrBottomRow Black
     ]
+  in {
+    gameState = {
+      board = board
+      , totalMovesSoFar = 0 
+    }
     , selectedSquareLoc = Nothing
   }
 
@@ -154,15 +166,33 @@ isPlayerKingInCheck team board =
 {--
   Returns chessboard after attempting to move given piece.
 --}
-tryMovePiece: Chessboard -> (Int,Int) -> (Int,Int) -> Chessboard
-tryMovePiece previousBoard startLoc endLoc =
+tryMovePiece: ChessGameState -> (Int,Int) -> (Int,Int) -> ChessGameState
+tryMovePiece previousGameState startLoc endLoc =
   let
-    validMovesForStartPiece = getPossibleMoveLocations startLoc previousBoard
+    validMovesForStartPiece = getPossibleMoveLocationsForGameState startLoc previousGameState
     moveAllowed = List.member endLoc validMovesForStartPiece
   in
     case moveAllowed of
-      False -> previousBoard
-      True -> getBoardWithPieceMoved previousBoard startLoc endLoc
+      False -> previousGameState
+      True -> {
+          previousGameState | board = getBoardWithPieceMoved previousGameState.board startLoc endLoc
+          , totalMovesSoFar = previousGameState.totalMovesSoFar + 1
+        }
+
+{--
+  Returns the set of possible moves for the given square for the given game state.
+--}
+getPossibleMoveLocationsForGameState: (Int,Int) -> ChessGameState -> List (Int, Int)
+getPossibleMoveLocationsForGameState testLoc {board, totalMovesSoFar} =
+  let
+    maybeSquare = getBoardSquareAtLocation testLoc board
+    moveLocs = getPossibleMoveLocations testLoc board
+    currentTeamsMove = if totalMovesSoFar % 2 == 0 then Black else White
+  in
+    case maybeSquare of
+      Just (FilledWith team _) ->
+        if (team == currentTeamsMove) then moveLocs else []
+      _ -> []
 
 {--
   Get every possible move location for a given board square
