@@ -11,7 +11,7 @@ if ( TARGET_ENV === 'dev' ) {
   var elmHotLoaderConfig = require('./webpack.common.config.js').elmHotLoaderConfig;
   var indexDevEntryConfig = require('./webpack.common.config.js').indexDevEntryConfig;
   
-	module.exports = merge(indexDevEntryConfig, indexFileConfig, devConfig, commonConfig, elmHotLoaderConfig);
+	module.exports = merge(indexFileConfig, devConfig, commonConfig, elmHotLoaderConfig);
 }
 
 // additional webpack settings for prod env (when invoked via 'npm run build')
@@ -19,10 +19,10 @@ if ( TARGET_ENV === 'prod' ) {
   var elmConfig = require('./webpack.common.config.js').elmConfig;
   var indexEntryConfig = require('./webpack.common.config.js').indexEntryConfig;
 	
-	module.exports = merge(indexEntryConfig, indexFileConfig, commonConfig, elmConfig, {
+	module.exports = merge(indexFileConfig, commonConfig, elmConfig, {
 		
 		//TODO: perform optimizations!
-		plugins: [
+		//plugins: [
       // new webpack.optimize.OccurenceOrderPlugin(),
 
       // minify & mangle JS/CSS
@@ -31,7 +31,7 @@ if ( TARGET_ENV === 'prod' ) {
       //     compressor: { warnings: false }
       //     // mangle:  true
       // })
-    ]
+    //]
 
   });
 }

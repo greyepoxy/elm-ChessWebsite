@@ -1,4 +1,4 @@
-module App.TestExtensions.AdditionalAssertionsTests (tests) where
+module App.TestExtensions.AdditionalAssertionsTests exposing (tests)
 
 import App.TestExtensions.AdditionalAssertions exposing (..)
 import ElmTest exposing (..)

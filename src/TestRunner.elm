@@ -1,10 +1,9 @@
-module TestRunner where
+module TestRunner exposing (main)
 
 import App.Chessboard.Tests
 import App.TestExtensions.AdditionalAssertionsTests
 
 import ElmTest exposing (..)
-import Graphics.Element exposing (Element)
 
 allTests : Test
 allTests =
@@ -13,6 +12,6 @@ allTests =
       , App.TestExtensions.AdditionalAssertionsTests.tests
     ]
 
-main : Element
+main : Program Never
 main =
-  elementRunner allTests
+  runSuiteHtml allTests

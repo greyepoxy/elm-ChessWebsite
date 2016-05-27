@@ -1,4 +1,4 @@
-module App.TestExtensions.AdditionalAssertions (assertContainsOnly, assertContainsOnlyFailureString) where
+module App.TestExtensions.AdditionalAssertions exposing (assertContainsOnly, assertContainsOnlyFailureString)
 
 import ElmTest exposing (..)
 

@@ -1,19 +1,18 @@
-module App.Update (..) where
+module App.Update exposing (..)
 
 import App.Model exposing (..)
-import App.Actions exposing (..)
-import App.Chessboard.Model
+import App.Messages exposing (..)
 import App.Chessboard.Update
-import Effects exposing (Effects)
+import Platform.Cmd exposing (Cmd)
 
 
-update : Action -> AppModel -> ( AppModel, Effects Action )
+update : Message -> AppModel -> ( AppModel, Cmd Message )
 update action model =
   case action of
-    NoOp -> ( model, Effects.none )
-    Resize dimensions -> ( {model | windowDimensions = dimensions }, Effects.none )
-    ChildBoardActions action ->
+    NoOp -> ( model, Cmd.none )
+    Resize dimensions -> ( {model | windowDimensions = dimensions }, Cmd.none )
+    ChildBoardMessages msg ->
       let
-        (newChessboard, effects) = App.Chessboard.Update.update action model.chessboard
+        (newChessboard, cmds) = App.Chessboard.Update.update msg model.chessboard
       in
-        ( {model | chessboard = newChessboard }, Effects.map (\a -> ChildBoardActions a) effects )
+        ( {model | chessboard = newChessboard }, Cmd.map (\a -> ChildBoardMessages a) cmds )

@@ -1,11 +1,11 @@
-module App.Chessboard.Model (
+module App.Chessboard.Model exposing (
   Team(White,Black)
   , ChessPiece(King,Queen,Rook,Bishop,Knight,Pawn)
   , BoardSquare(Empty,FilledWith)
   , indexedMap, getArrayOfArraysAsFlatList
   , Row, Chessboard, ChessGameState, InteractiveChessboard, initialBoard
   , setPieceAtLoc, tryMovePiece, getPossibleMoveLocations
-  , getPossibleMoveLocationsForGameState, isPlayersTurnForPieceAtLocation) where
+  , getPossibleMoveLocationsForGameState, isPlayersTurnForPieceAtLocation)
 
 import Array exposing (Array)
 

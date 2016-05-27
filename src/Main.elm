@@ -1,19 +1,31 @@
-module Main (..) where
+module Main exposing (..)
 
-import Html exposing (Html)
-import Task exposing (Task)
-import Effects exposing (Never)
-import MainCommon
-import App.Actions exposing (Action(NoOp))
+import Window
+import Platform.Cmd exposing (Cmd)
+import Html.App
+import Platform.Cmd exposing (Cmd)
+import App.Model exposing (initialModel, AppModel)
+import App.Messages exposing (Message(Resize))
+import App.Update exposing (update)
+import App.View exposing (view)
 
-app = MainCommon.app initialWindowDimensions []
 
-main : Signal Html
+main : Program Never
 main =
-  app.html
+   Html.App.program
+    { init = init (0,0)
+    , update = update
+    , view = view
+    , subscriptions = windowDimensions
+    }
 
-port runner : Signal (Task Never ())
-port runner =
-  app.tasks
+-- port initialWindowDimensions : (Int, Int)
 
-port initialWindowDimensions : (Int, Int)
+
+init : (Int,Int) -> ( AppModel, Cmd Message )
+init initialWindowDimensions =
+  ( initialModel initialWindowDimensions, Cmd.none )
+
+windowDimensions : AppModel -> Sub Message
+windowDimensions model = 
+  Window.resizes (\{height,width} -> Resize (width, height)) 

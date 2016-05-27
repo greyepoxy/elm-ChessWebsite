@@ -1,4 +1,4 @@
-module App.Chessboard.Tests (tests) where
+module App.Chessboard.Tests exposing (tests)
 
 import Array exposing (Array)
 import App.Chessboard.Model exposing (..)
@@ -86,12 +86,12 @@ modelTests =
 
 testMoveLocationsForEmptySquare =
   test "Should be no possible move locations for an Empty Square" <| 
-    [] `assertEqual` getPossibleMoveLocations (2,5) initialBoard.squares
+    [] `assertEqual` getPossibleMoveLocations (2,5) initialBoard.gameState.board
 
 testMoveLocationsForPawnFilledSquare =
   suite "Pawn should move correctly"
   [ test "Should be able to move one space or two on first move" <|
-      [(0,2), (0,3)] `assertContainsOnly` (getPossibleMoveLocations (0,1) initialBoard.squares)
+      [(0,2), (0,3)] `assertContainsOnly` (getPossibleMoveLocations (0,1) initialBoard.gameState.board)
     , test "Should only be able to move one space after first move" <|
       [(0,3)] `assertContainsOnly`
       getPossibleMoveLocations (0,2) (getChessboardWithGivenSquares [((0,2), (FilledWith White Pawn))])
@@ -144,7 +144,7 @@ testMoveLocationsForKnightFilledSquare =
     , test "Can jump over pieces." <|
       [(0,2),(2,2)]
       `assertContainsOnly`
-      getPossibleMoveLocations (1,0) initialBoard.squares
+      getPossibleMoveLocations (1,0) initialBoard.gameState.board
   ]
 
 testMoveLocationsForBishopFilledSquare =

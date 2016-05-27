@@ -1,16 +1,16 @@
-module App.Chessboard.Update (..) where
+module App.Chessboard.Update exposing (..)
 
 import App.Chessboard.Model exposing (..)
-import App.Chessboard.Actions exposing (..)
-import Effects exposing (Effects)
+import App.Chessboard.Messages exposing (..)
+import Platform.Cmd exposing (Cmd)
 
-update : Action -> InteractiveChessboard -> ( InteractiveChessboard, Effects Action )
+update : Message -> InteractiveChessboard -> ( InteractiveChessboard, Cmd Message )
 update action model =
   case action of
-    NoOp -> ( model, Effects.none )
+    NoOp -> ( model, Cmd.none )
     SelectLocation loc -> ( 
       updateBasedOnSelectedLocAction loc model
-      , Effects.none )
+      , Cmd.none )
 
 updateBasedOnSelectedLocAction: (Int,Int) -> InteractiveChessboard -> InteractiveChessboard
 updateBasedOnSelectedLocAction newSelectedLoc previousModel =

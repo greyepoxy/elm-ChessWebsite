@@ -1,4 +1,4 @@
-module App.Chessboard.View (..) where
+module App.Chessboard.View exposing (..)
 
 import Array exposing (Array)
 import Color exposing (Color)
@@ -7,7 +7,7 @@ import Html exposing (Html)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
 import Svg.Events exposing (onMouseDown, onMouseUp, onMouseMove, onClick)
-import App.Chessboard.Actions exposing (..)
+import App.Chessboard.Messages exposing (..)
 import App.Chessboard.Model exposing (..)
 import App.ChessPieces as ChessPieces
 
@@ -17,8 +17,8 @@ type alias DrawableSquare = {
   , color: Color
 }
 
-view : Signal.Address Action -> InteractiveChessboard -> Html
-view address {gameState, selectedSquareLoc} =
+view : InteractiveChessboard -> Html Message
+view {gameState, selectedSquareLoc} =
   let 
     board = gameState.board
     squareSize = 150
@@ -30,7 +30,7 @@ view address {gameState, selectedSquareLoc} =
       |> List.map 
         (ifAPossibleMoveLocationChangeColor 
           (getPossibleMoveLocs gameState selectedSquareLoc))
-      |> List.map (getSquareAsSvg squareSize address)
+      |> List.map (getSquareAsSvg squareSize)
       |> Svg.svg [class "mx-auto"
         , preserveAspectRatio "xMidYMid meet"  
         , width "100%"
@@ -83,8 +83,8 @@ doPositionsMatch maybePos (x,y) =
     Nothing -> False
     Just (xPos, yPos) -> x == xPos && y == yPos 
 
-getSquareAsSvg: Int -> Signal.Address Action -> DrawableSquare -> Svg
-getSquareAsSvg squareSize address drawableSquare =
+getSquareAsSvg: Int -> DrawableSquare -> Svg Message
+getSquareAsSvg squareSize drawableSquare =
   let
     (xPos, yPos) = translateToScreenCoordinates squareSize drawableSquare.boardPosition
   in
@@ -96,12 +96,12 @@ getSquareAsSvg squareSize address drawableSquare =
         width (toString squareSize)
         , height (toString squareSize)
         , fill (colorToHex drawableSquare.color)
-        , onClick (Signal.message address (SelectLocation drawableSquare.boardPosition))
+        , onClick (SelectLocation drawableSquare.boardPosition)
       ] []
       , getBoardSquareAsSvg squareSize drawableSquare.square
     ]
 
-getBoardSquareAsSvg: Int -> BoardSquare -> Svg
+getBoardSquareAsSvg: Int -> BoardSquare -> Svg msg
 getBoardSquareAsSvg squareSize square =
   case square of
     Empty -> g [] []
