@@ -8,7 +8,8 @@
     "build": "rimraf dist && webpack",
     "watch": "webpack --watch",
     "dev": "webpack-dev-server --port 3000 --hot --inline",
-    "test": "webpack-dev-server --config webpack.test.config.js --port 3001 --inline"
+    "test": "webpack-dev-server --config webpack.test.config.js --port 3001 --inline",
+    "deploy": "npm run build && gulp deploy"
   },
   "keywords": [
     "elm"
@@ -21,6 +22,8 @@
     "elm-webpack-loader": "^3.0.3",
     "extract-text-webpack-plugin": "^1.0.1",
     "file-loader": "^0.8.5",
+    "gulp": "^3.9.1",
+    "gulp-gh-pages": "^0.5.4",
     "html-webpack-plugin": "^2.17.0",
     "rimraf": "^2.5.2",
     "style-loader": "^0.13.1",
